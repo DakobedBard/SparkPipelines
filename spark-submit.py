@@ -1,5 +1,5 @@
 import pyspark as ps    # for the pyspark suite
-
+from Pipelines.getSparkSession import getSparkSession
 if __name__ == "__main__":
     # we try to create a SparkSession to work locally on all cpus available
     spark = ps.sql.SparkSession.builder \

@@ -1,0 +1,5 @@
+
+
+We are summing up when we reduce by key...
+
+parsedRDD.reduceByKey(lambda accum, n:accum+n).collect()
