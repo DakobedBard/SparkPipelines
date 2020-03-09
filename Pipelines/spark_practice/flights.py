@@ -1,8 +1,7 @@
 
 
-from Pipelines.flights.analyzeFlightData import split_csvstring, parseRDD
 from Pipelines.getSparkSession import getSparkSession
-
+import os
 import csv              # for the split_csvstring function from Part 3.2.2
 try:                    # Python 3 compatibility
     from StringIO import StringIO
@@ -52,26 +51,32 @@ def make_row_dict(row_values, col_names, keep_keys_set):
     {'DEST_AIRPORT_ID', 'ORIGIN_AIRPORT_ID', 'DEP_DELAY', 'ARR_DELAY'}
     {'ARR_DELAY': -17.0, 'DEST_AIRPORT_ID': '12892', 'DEP_DELAY': -4.0, 'ORIGIN_AIRPORT_ID': '12478'}
     """
-    row = row_values[0].split(",")
-    print(row)
-    output_dict = {}
-    indices = []
-    for key in keep_keys_set:
-        if (key in col_names):
-            index = col_names.index(key)
-            print(index)
-            output_dict[key] = float(row[index])
 
+    output_dict = {}
+    print("ROw " + str(len(row_values)))
+    for key in keep_keys_set:
+        index = col_names.index(key)
+        output_dict[key] = float(row_values[index])
+        if key == 'DEP_DELAY' or 'ARR_DELAY':
+            if row_values[index] == '':
+                output_dict[key] = 0.0
+            else:
+                output_dict[key] = float(row_values[index])
+        else:
+            output_dict[key] = float(row_values[index])
     return output_dict
 
 spark = getSparkSession()
 sc = spark.sparkContext
-flightsRDD = sc.textFile('data/airline-data-extract.csv')
+
+flightsRDD = sc.textFile(os.getcwd() + '/data/airline-data-extract.csv')
 
 header = flightsRDD.first()
 columns = split_csvstring(header)
 flightsRDD = rdd = flightsRDD.filter(lambda line: line!= header)
 keys =     {'DEST_AIRPORT_ID', 'ORIGIN_AIRPORT_ID', 'DEP_DELAY', 'ARR_DELAY'}
 
+row = ['2012', '4', 'AA', '12478', '12892', '-4.00', '0.00', '-21.00', '0.00', '0.00', '']
+firstTry = make_row_dict(row,columns, keys )
+mappedRDD = flightsRDD.map(lambda row: make_row_dict(row, columns, keys))
 
-firstTry = make_row_dict(flightsRDD.take(1),columns, keys )
