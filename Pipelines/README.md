@@ -8,3 +8,9 @@ from pyspark.sql import functions as F
 containsRestaurants = FiveStarsPheonixCC.filter(array_contains(F.col("categories"), "Food"))
 
 For some reason the col method does not want to get imported nicely in PyCharm. 
+
+
+- Write parquet files to an S3 bucket.  
+
+
+Use ipyspark instead of pyspark or else some of the classes will not be found 
