@@ -1,12 +1,6 @@
 from urllib.request import urlopen as uReq
 from bs4 import BeautifulSoup as soup
 
-def parse_wta_trip_reports(url):
-    wtaClient = uReq(url)
-    wta_html = wtaClient.read()
-    wtaClient.close()
-    wtasoup = soup(wta_html,"html.parser")
-    return wtasoup
 
 def parse_book_reviews(url):
     bookClient = uReq(url)
@@ -35,13 +29,4 @@ def parse_book_reviews(url):
 
 book_url = 'https://www.goodreads.com/book/show/249.Tropic_of_Cancer'
 soup = parse_book_reviews(book_url)
-
-# spans = r1.find_all('span')
-# spans.pop()
-# spans.pop()
-# spans.pop()
-# # spans.pop()
-# likes  = int(spans.pop().text.split(' ')[0])
-# review1 = spans.pop()
-# reviewText = review1.text
 
