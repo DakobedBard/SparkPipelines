@@ -2,13 +2,6 @@ from urllib.request import urlopen as uReq
 from bs4 import BeautifulSoup as soup
 import datetime
 
-def parse_wta_trip_reports(url):
-    wtaClient = uReq(url)
-    wta_html = wtaClient.read()
-    wtaClient.close()
-    wtasoup = soup(wta_html,"html.parser")
-    return wtasoup
-
 def get_wta_soup():
     wtaClient = uReq('https://www.wta.org/go-outside/trip-reports')
     wta_html = wtaClient.read()
