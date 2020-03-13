@@ -4,8 +4,8 @@ from datetime import date
 from bs4 import BeautifulSoup
 import requests
 import datetime
-startdate = date(2019, 8, 15)   # start date
-enddate = date(2019, 8, 18)   # end date
+startdate = date(2019, 2, 19)   # start date
+enddate = date(2019, 2, 20)   # end date
 urls = backfill_data_urls(startdate,enddate)
 
 for url in urls:

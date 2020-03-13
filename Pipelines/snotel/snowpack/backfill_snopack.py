@@ -3,6 +3,14 @@ from bs4 import BeautifulSoup
 import requests
 import datetime
 from IPython import embed
+
+url = 'https://wcc.sc.egov.usda.gov/reports/UpdateReport.html?textReport=Washington&textRptKey=12&textFormat=SNOTEL+Snow%2FPrecipitation+Update+Report&StateList=12&RegionList=Select+a+Region+or+Basin&SpecialList=Select+a+Special+Report&MonthList=February&DayList=15&YearList=2019&FormatList=N0&OutputFormatList=HTML&textMonth=February&textDay=15&CompYearList=select+a+year'
+
+def gen_url(month, day, year):
+    url = 'https://wcc.sc.egov.usda.gov/reports/UpdateReport.html?textReport=Washington&textRptKey=12&textFormat=SNOTEL+Snow%2FPrecipitation+Update+Report&StateList=12&RegionList=Select+a+Region+or+Basin&SpecialList=Select+a+Special+Report&MonthList={}&DayList={}&YearList={}&FormatList=N0&OutputFormatList=HTML&textMonth={}&textDay={}&CompYearList=select+a+year'.format(month, day,year, month,day)
+    return url
+
+
 def generate_url(month, day, year):
     '''
     Generate a URL that points to the snowpack data to be scraped on the input month, day and year
@@ -20,7 +28,7 @@ def backfill_data_urls(startdate, enddate):
     :param enddate:
     :return:
     '''
-    months = ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October',
+    months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October',
               'November', 'December']
     delta = enddate - startdate  # as timedelta
     urls = []
@@ -100,7 +108,3 @@ def extract_snowpack_data(url):
 
     return region_dictionary
 
-startdate = date(2008, 8, 15)   # start date
-enddate = date(2008, 9, 18)   # end date
-
-urls = backfill_data_urls(startdate, enddate)
