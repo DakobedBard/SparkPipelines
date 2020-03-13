@@ -2,13 +2,6 @@ from datetime import date, timedelta
 from bs4 import BeautifulSoup
 import requests
 import datetime
-from IPython import embed
-
-url = 'https://wcc.sc.egov.usda.gov/reports/UpdateReport.html?textReport=Washington&textRptKey=12&textFormat=SNOTEL+Snow%2FPrecipitation+Update+Report&StateList=12&RegionList=Select+a+Region+or+Basin&SpecialList=Select+a+Special+Report&MonthList=February&DayList=15&YearList=2019&FormatList=N0&OutputFormatList=HTML&textMonth=February&textDay=15&CompYearList=select+a+year'
-
-def gen_url(month, day, year):
-    url = 'https://wcc.sc.egov.usda.gov/reports/UpdateReport.html?textReport=Washington&textRptKey=12&textFormat=SNOTEL+Snow%2FPrecipitation+Update+Report&StateList=12&RegionList=Select+a+Region+or+Basin&SpecialList=Select+a+Special+Report&MonthList={}&DayList={}&YearList={}&FormatList=N0&OutputFormatList=HTML&textMonth={}&textDay={}&CompYearList=select+a+year'.format(month, day,year, month,day)
-    return url
 
 
 def generate_url(month, day, year):
@@ -37,12 +30,9 @@ def backfill_data_urls(startdate, enddate):
         urls.append(generate_url(months[day.month-1], day.day, day.year))
     return urls
 
-from Pipelines.data_utils.mongoConnection import getMongoClient
-
 def extract_snowpack_data(url):
     r = requests.get(url)
     html = r.content
-
     soup = BeautifulSoup(html, 'html.parser')
     snowpackTable = soup.find('table', {'id': 'update_report_data'})
 
@@ -67,11 +57,9 @@ def extract_snowpack_data(url):
             region_name = ''.join(filter(str.isalpha, col_text))
 
             current_region = region_name
-
             region_dictionary[region_name] = {}
 
         if len(columns) == 3:
-
             # Here we have our basin index.. which has aggregate values such as percentage of median etc for the basin
             for j, column in enumerate(columns):
                 column_text = column.getText()
@@ -105,6 +93,5 @@ def extract_snowpack_data(url):
                             ''.join(filter(str.isdigit, column_text)))
                     except:
                         region_dictionary[current_region][current_loc][metrics[j - 1]] = ''
-
     return region_dictionary
 
