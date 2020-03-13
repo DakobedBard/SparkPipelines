@@ -1,4 +1,3 @@
-import boto3
 from Pipelines.data_utils.dynamoConnection import getDynamoResource
 
 dynamoDB = getDynamoResource()
