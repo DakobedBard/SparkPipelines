@@ -9,9 +9,9 @@ def parse_trip_report(url):
     :param url: URL to the WTA trip report
     :return:
     '''
-    tripClient = uReq(url)
-    trip_html = tripClient.read()
-    tripClient.close()
+    client = uReq(url)
+    trip_html = client.read()
+    client.close()
     tripsoup = soup(trip_html,"html.parser")
     content = tripsoup.find("article", {"id": "content"})
     trip_text = content.find('p').text
@@ -34,7 +34,6 @@ def scrape_trip_reports():
     client = getMongoClient()
     trip_reports_db = client['TripReports']
     reports_collection = trip_reports_db['reports_collection']
-
     for page_number in range(3):
         url = 'https://www.wta.org/@@search_tripreport_listing?b_size=100&amp;b_start:int=%d&amp;_=1584045459199"' % int(
             100 * page_number)
@@ -43,15 +42,12 @@ def scrape_trip_reports():
             page_soup = get_page_soup(url)
             reports = page_soup.find_all("a", {"class": "listitem-title"})
             page_trip_report_urls = []
-
             for report in reports:
                 report_url = str(report).split('href=')[1].split('"')[1]
                 page_trip_report_urls.append(report_url)
                 report_dict = parse_trip_report(report_url)
                 report_dictionaries.append(report_dict)
                 number_of_reports_processed += 1
-                if number_of_reports_processed % 10 ==0:
-                    print("Processed " + str(number_of_reports_processed) + " reports ")
 
         except Exception as e:
             print("We have a problem with the url at")

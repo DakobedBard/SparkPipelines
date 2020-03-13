@@ -154,3 +154,13 @@ JavaScript error: https://www.wta.org/@@search_tripreport_listing?b_size=100&b_s
 1584046952353	Marionette	INFO	Listening on port 45817
 1584046952357	Marionette	WARN	TLS certificate errors will be ignored for this session
 JavaScript error: https://www.wta.org/go-outside/trip-reports line 1262 > scriptElement, line 1: ReferenceError: FB is not defined
+JavaScript error: , line 0: UnknownError: The operation failed for reasons unrelated to the database itself and not covered by any other error code.
+1584056470849	Marionette	INFO	Stopped listening on port 45007
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+JavaScript error: , line 0: UnknownError: The operation failed for reasons unrelated to the database itself and not covered by any other error code.
+1584056472826	Marionette	INFO	Stopped listening on port 45817
