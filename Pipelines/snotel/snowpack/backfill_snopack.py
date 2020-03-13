@@ -1,10 +1,37 @@
+from datetime import date, timedelta
 from bs4 import BeautifulSoup
 import requests
 import datetime
+from IPython import embed
+def generate_url(month, day, year):
+    '''
+    Generate a URL that points to the snowpack data to be scraped on the input month, day and year
+    :param month:
+    :param day:
+    :param year:
+    :return: url string
+    '''
+    return 'https://wcc.sc.egov.usda.gov/reports/UpdateReport.html?textReport=Washington&textRptKey=12&textFormat=SNOTEL+Snow%2FPrecipitation+Update+Report&StateList=12&RegionList=Select+a+Region+or+Basin&SpecialList=Select+a+Special+Report&MonthList={}&DayList={}&YearList={}&FormatList=N0&OutputFormatList=HTML&textMonth=March&textDay=11&CompYearList=select+a+year'.format(month, day, year)
+
+def backfill_data_urls(startdate, enddate):
+    '''
+    Returns a list of urls that will be scraped
+    :param startdate:
+    :param enddate:
+    :return:
+    '''
+    months = ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October',
+              'November', 'December']
+    delta = enddate - startdate  # as timedelta
+    urls = []
+    for i in range(delta.days + 1):
+        day = startdate + timedelta(days=i)
+        urls.append(generate_url(months[day.month-1], day.day, day.year))
+    return urls
+
 from Pipelines.data_utils.mongoConnection import getMongoClient
 
-def extract_snowpack_data():
-    url = 'https://wcc.sc.egov.usda.gov/reports/UpdateReport.html?report=Washington'
+def extract_snowpack_data(url):
     r = requests.get(url)
     html = r.content
 
@@ -42,7 +69,10 @@ def extract_snowpack_data():
                 column_text = column.getText()
                 if j == 1:
 
-                    pct_med = int(''.join(filter(str.isdigit, column_text)))
+                    try:
+                        pct_med = int(''.join(filter(str.isdigit, column_text)))
+                    except:
+                        pct_med = 0
                     region_dictionary[current_region]['Basin Index'] = {}
                     region_dictionary[current_region]['Basin Index']['pctmedian'] = pct_med
                 elif j == 2:
@@ -70,13 +100,7 @@ def extract_snowpack_data():
 
     return region_dictionary
 
-def insert_snotel_to_mongodb():
-    '''
-    This function will instantiate a mongodb connection and insert the regions dictionary into the
-    '''
-    regions_dictionary = extract_snowpack_data()
-    client = getMongoClient()
-    snow_db = client['SnowPack']
-    snow_collection = snow_db['snow_collection']
-    snow_collection.insert_one(regions_dictionary)
+startdate = date(2008, 8, 15)   # start date
+enddate = date(2008, 9, 18)   # end date
 
+urls = backfill_data_urls(startdate, enddate)

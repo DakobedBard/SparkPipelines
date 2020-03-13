@@ -1,4 +1,5 @@
 .idea
 data/
 Pipelines/songs/__pycache__/
-
+Pipelines/snotel/__pycache__/
+__pycache__/
