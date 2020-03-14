@@ -14,3 +14,12 @@ For some reason the col method does not want to get imported nicely in PyCharm.
 
 
 Use ipyspark instead of pyspark or else some of the classes will not be found 
+
+
+
+
+THe WITH keyword in python is used when working with unmanaged resources (such as file streams).  Ensures that a 
+resource is "cleaned up" when the code that uses it finishes running, even if an exception is thrown.  
+Porvides syntactic sugar for 'try/finally' blocks
+
+The with statement clarifies code that previously would use try...finally blocks to ensure that clean-up code is executed. In this section, I’ll discuss the statement as it will commonly be used. In the next section, I’ll examine the implementation details and show how to write objects for use with this statement.

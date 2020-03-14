@@ -30,7 +30,7 @@ def backfill_data_urls(startdate, enddate):
         urls.append(generate_url(months[day.month-1], day.day, day.year))
     return urls
 
-def extract_snowpack_data(url):
+def extract_snowpack_data(url= 'https://wcc.sc.egov.usda.gov/reports/UpdateReport.html?report=Washington'):
     r = requests.get(url)
     html = r.content
     soup = BeautifulSoup(html, 'html.parser')
